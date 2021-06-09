@@ -39,47 +39,45 @@
 
 	<script>
 
+        const Dudes = {
+            data() {
+                return {
+                    newWho: '',
+                    newWat: '',
+                    characters: [],
+                }
+            },
+            methods: {
+                add() {
+                    if ( !this.newWho || !this.newWat ) return
 
-    const Dudes = {
-        data() {
-            return {
-                newWho: '',
-                newWat: '',
-                characters: [],
+                    this.characters.push({
+                        who: this.newWho,
+                        wat: this.newWat,
+                        cool: 15
+                    })
+
+                    this.newWho = ''
+                    this.newWat = ''
+
+                    this.$refs.new.focus()
+                },
+                remove(dude) {
+                    this.characters = this.characters.filter( item => item !== dude )
+                },
+                clear() {
+                    this.newWho = ''
+                    this.newWat = ''
+                }
+            },
+            created() {
+                fetch('https://gist.githubusercontent.com/yablko/035b44dd8d63d586e6763872beb3547e/raw/0f3d18326492a6670bc259a78a98e4c702059d81/dudes.json')
+                    .then(res => res.json())
+                    .then(json => this.characters = json)
             }
-        },
-        methods: {
-            add() {
-				if ( !this.newWho || !this.newWat ) return
+        }
 
-				this.characters.push({
-					who: this.newWho,
-					wat: this.newWat,
-					cool: 15
-				})
-
-				this.newWho = ''
-				this.newWat = ''
-
-				this.$refs.new.focus()
-			},
-			remove(dude) {
-				this.characters = this.characters.filter( item => item !== dude )
-			},
-            clear() {
-                this.newWho = ''
-				this.newWat = ''
-            }
-        },
-        created() {
-			fetch('https://gist.githubusercontent.com/yablko/035b44dd8d63d586e6763872beb3547e/raw/0f3d18326492a6670bc259a78a98e4c702059d81/dudes.json')
-				.then(res => res.json())
-				.then(json => this.characters = json)
-		}
-    }
-
-    Vue.createApp(Dudes).mount("#app")
-
+        Vue.createApp(Dudes).mount("#app")
 	</script>
 
 </body>
