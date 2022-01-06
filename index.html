@@ -1,1 +1,84 @@
-<!DOCTYPE html><html lang=""><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/favicon.ico"><title>vue3-compositionapi</title><link href="/css/app.2b94c208.css" rel="preload" as="style"><link href="/js/app.889b384e.js" rel="preload" as="script"><link href="/js/chunk-vendors.30dee754.js" rel="preload" as="script"><link href="/css/app.2b94c208.css" rel="stylesheet"></head><body><noscript><strong>We're sorry but vue3-compositionapi doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div><script src="/js/chunk-vendors.30dee754.js"></script><script src="/js/app.889b384e.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<script src="https://unpkg.com/vue@next"></script>
+	<link rel="stylesheet" href="dsgn/src/css/bootstrap.min.css">
+	<link rel="stylesheet" href="dsgn/src/css/custom.css">
+	<title>Vue me</title>
+</head>
+<body>
+
+	<div id="app">
+		<transition-group name="dude" tag="ul">
+			<li class="dude" v-for="(dude, index) in characters" :key="index">
+				<a class="ctrl" @click.prevent="remove(dude)">x</a>
+
+				<article :class="{ faded: dude.cool < 10, gold: dude.cool > 50 }">
+					{{ dude.who }}
+					<span>{{ dude.wat }}</span>
+				</article>
+
+				<input class="ctrl" type="number" v-model.number="dude.cool">
+			</li>
+		</transition-group>
+
+		<form class="add-new" @keydown.enter="add" @keydown.esc="clear">
+			<input type="text" v-model="newWho" ref="new" autofocus>
+			<input type="text" v-model="newWat">
+		</form>
+
+		<p class="preview">
+			{{ newWho }} <br>
+			<small>{{ newWat }}</small>
+		</p>
+	</div>
+
+
+	<script>
+
+        const Dudes = {
+            data() {
+                return {
+                    newWho: '',
+                    newWat: '',
+                    characters: [],
+                }
+            },
+            methods: {
+                add() {
+                    if ( !this.newWho || !this.newWat ) return
+
+                    this.characters.push({
+                        who: this.newWho,
+                        wat: this.newWat,
+                        cool: 15
+                    })
+
+                    this.newWho = ''
+                    this.newWat = ''
+
+                    this.$refs.new.focus()
+                },
+                remove(dude) {
+                    this.characters = this.characters.filter( item => item !== dude )
+                },
+                clear() {
+                    this.newWho = ''
+                    this.newWat = ''
+                }
+            },
+            created() {
+                fetch('https://gist.githubusercontent.com/yablko/035b44dd8d63d586e6763872beb3547e/raw/0f3d18326492a6670bc259a78a98e4c702059d81/dudes.json')
+                    .then(res => res.json())
+                    .then(json => this.characters = json)
+            }
+        }
+
+        Vue.createApp(Dudes).mount("#app")
+	</script>
+
+</body>
+</html>
